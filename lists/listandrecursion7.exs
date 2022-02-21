@@ -11,12 +11,12 @@ defmodule MyList do
     [from | span(from - 1, to)]
   end
 
+
   def getPrimes(2, n) do
     list = span(2, n)
-
-    # a([2, 5])
-    # b([2, 5])
-
-    for a, b <- list, b <- list, a <= b and a * b <= n, do: a * b
+    result = for x <- list, 6*x + 1 <= n, rem(6*x + 1, 3) != 0, rem(6*x + 1, 5) != 0, rem(6*x + 1, 7) != 0, do: 6*x + 1
+    result2 = for x <- list, 6*x - 1 <= n, rem(6*x - 1, 3) != 0, rem(6*x - 1, 5) != 0, rem(6*x - 1, 7) != 0, do: 6*x - 1
+    [2,3,5 | result ++ result2]
+    |>Enum.sort()
   end
 end

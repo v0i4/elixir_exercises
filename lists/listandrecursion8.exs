@@ -1,6 +1,7 @@
 defmodule Taxes do
-  def totalAmount() do
-    tax_rates = [NC: 0.075, TX: 0.08]
+
+ def run do
+ tax_rates = [NC: 0.075, TX: 0.08]
 
     orders = [
       [id: 123, ship_to: :NC, net_amount: 100.00],
@@ -12,19 +13,23 @@ defmodule Taxes do
       [id: 129, ship_to: :CA, net_amount: 102.00],
       [id: 130, ship_to: :NC, net_amount: 50.00]
     ]
+  totalAmount(orders, tax_rates)
+ end
 
-    orders_with_total(orders, tax_rates)
+ def applyTax(order = [id: _, ship_to: state, net_amount: net], tax_rates ) do
 
-    def orders_with_total(orders, tax_rates) do
-      orders
-      |> Enum.map(add_total(&1, tax_rates))
-    end
+  if Keyword.get(tax_rates, state) != nil do
+    Keyword.put(order, :taxed_value, net * tax_rates[state] + net)
+    else
+     Keyword.put(order, :taxed_value, net)
 
-    def add_total(order = [id: _, ship_to: state, net_amount: net], tax_rates) do
-      tax_rate = Keyword.get(tax_rates, state, 0)
-      tax = net * tax_rate
-      total = net + tax
-      Keyword.put(order, :total_amount, total)
-    end
   end
 end
+
+  def totalAmount(orders, tax_rates) do
+    orders |> Enum.map(fn order -> applyTax(order, tax_rates) end)
+
+  end
+end
+
+IO.inspect Taxes.run()
